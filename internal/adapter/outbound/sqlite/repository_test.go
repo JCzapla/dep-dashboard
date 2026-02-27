@@ -45,9 +45,7 @@ func TestBuildFilters(t *testing.T) {
 			if err != nil && err.Error() != tt.Error {
 				t.Fatalf("Got error %s, expected %s", err.Error(), tt.Error)
 			}
-			if tt.Error != "" {
-				return 
-			}
+
 			if clause != tt.expectedClause {
 				t.Errorf("Got clause %s, expected %s", clause, tt.expectedClause)
 			}
@@ -56,7 +54,7 @@ func TestBuildFilters(t *testing.T) {
 			}
 			for i, arg := range args {
 				if arg != tt.expectedArgs[i] {
-					t.Errorf("Got args[%d] %s, expected %v", i, arg, tt.expectedArgs[i])
+					t.Errorf("Got args[%d] %v, expected %v", i, arg, tt.expectedArgs[i])
 				}
 			}
 		})
