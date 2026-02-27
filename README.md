@@ -60,9 +60,9 @@ Works the same way as `PUT` endpoint just does not support query param, pass pac
 
 `curl -X POST localhost:8080/deps -H "Content-Type: application/json" -d "{\"name\": \"express\" }"`
 
-`DELETE /deps`
+`DELETE /deps/{name}`
 
-Removes current package from the database.
+Removes {name} package from the database.
 
 ## Database schema
 Database consists of 2 tables: `packages` and `dependency_nodes`. `packages` stores the name, version and update timestamp of the package we want to investigate, this table should have just 1 row at all times. One to many relation connects `packages` to `dependency_nodes`, we store each dependency, alongside its metadata and OpenSSF score, to current package as a separate row. Full schema can be investigated in the repo `internal/adapter/outbound/sqlite/schema.go`. Data does not persists after container turns off 
