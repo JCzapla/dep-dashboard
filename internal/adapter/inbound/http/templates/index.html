@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Dependency Dashboard</title>
+        <style>
+            .chart {
+                max-width: 720px;
+                border: 1px solid gray;
+                padding: 4px;
+            }
+            .chart-row {
+                height: 10px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            .chart-bar {
+                height: 80%;
+                max-width: 100%;
+            }
+            .chart-label {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                width: 140px;
+            }
+            .chart-container {
+                flex: 1;
+                height: 100%
+            }
+            .chart-score {
+                margin-left: auto;
+            }
+            .score-green {
+                background-color: green;
+            }
+            .score-yellow {
+                background-color: orange;
+            }
+            .score-red {
+                background-color: red;
+            }
+            .score-nil {
+                background-color: white;
+            }
+            table {
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid gray;
+                padding: 8px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <h1>Dependency Dashboard</h1>
+
+    {{if .Error}}
+        <div>{{.Error}}</div>
+    {{else if .Package}}
+        <div>
+            <h2>{{.Package.PackageRef.Name}} | {{.Package.PackageRef.Version}}</h2>
+            <div>
+                Last updated at {{.Package.LastUpdatedAt.Format "2006-01-02 15:04:05"}}
+            </div>
+        </div>
+        
+        <form method="GET" action="/deps">
+            <input type="text" name="name" value="{{.Filter}}" placeholder="Filter by name">
+            <input type="number" name="minScore" value="{{.MinScore}}" placeholder="Min score" min="0" max="10">
+            <button type="submit">Filter</button>
+        </form>
+        
+
+        {{if .Package.Dependencies}}
+        
+        <h2>OpenSSF Scores</h2>
+        <div class="chart">
+            {{range .Package.Dependencies}}
+            <div class="chart-row">
+                <div class="chart-label">{{.Name}}</div>
+                <div class="chart-container">
+                    <div class="chart-bar {{scoreBarColor .Score}}" style="width:{{scoreBarWidth .Score}}%"></div>
+                </div>
+                <div class="chart-score">{{.Score}}</div>
+            </div>
+            {{end}}
+        </div>
+
+        <h2>Dependencies</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Dependency</th>
+                    <th>Version</th>
+                    <th>Relation</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Package.Dependencies}}
+                <tr>
+                    <td>{{.Name}}</td>
+                    <td>{{.Version}}</td>
+                    <td>{{.Relation}}</td>
+                    <td>{{.Score}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{else}}
+            <p>No dependencies to match {{.Filter}}</p>
+        {{end}}
+    {{end}}
+    </body>
+</html>
